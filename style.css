@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #7289DA; /* Discord Blurple */
+    --dark-bg: #23272A;
+    --darker-bg: #1e2124;
+    --light-text: #ffffff;
+    --secondary-text: #99aab5;
+    --success-color: #43b581;
+    --error-color: #f04747;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--light-text);
+    background-image: url('background.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.container {
+    max-width: 800px;
+    width: 90%;
+    background-color: rgba(30, 33, 36, 0.9);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+header p {
+    color: var(--secondary-text);
+    font-size: 1.1rem;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+section {
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+.social-links .links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.social-links .links a {
+    color: var(--light-text);
+    font-size: 2.5rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-links .links a:hover {
+    color: var(--primary-color);
+    transform: scale(1.2);
+}
+
+.discord-section p {
+    color: var(--secondary-text);
+    margin-bottom: 1.5rem;
+}
+
+.discord-invite-btn {
+    background-color: var(--primary-color);
+    color: var(--light-text);
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+.discord-invite-btn:hover {
+    background-color: #5f73bc;
+}
+
+.discord-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 2rem;
+    text-align: left;
+}
+
+.live-chat-panel, .discord-chat {
+    background-color: var(--dark-bg);
+    padding: 1.5rem;
+    border-radius: 8px;
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.live-chat-panel h3, .discord-chat h3 {
+    margin-bottom: 1rem;
+    color: var(--light-text);
+    font-size: 1.5rem;
+}
+
+.live-chat-panel h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.live-chat-panel h3 i {
+    color: var(--primary-color);
+}
+
+.chat-messages {
+    height: 250px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-right: 10px; /* For scrollbar */
+    margin-top: auto; /* Pushes content up */
+}
+
+/* Custom Scrollbar */
+.chat-messages::-webkit-scrollbar {
+  width: 8px;
+}
+.chat-messages::-webkit-scrollbar-track {
+  background: var(--darker-bg);
+  border-radius: 4px;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #4f545c;
+  border-radius: 4px;
+}
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #72767d;
+}
+
+.chat-message {
+    animation: fadeIn 0.5s ease;
+}
+
+.chat-message div {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.chat-message .author {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.chat-message .timestamp {
+    font-size: 0.75rem;
+    color: var(--secondary-text);
+}
+
+.chat-message .content {
+    color: var(--light-text);
+    word-wrap: break-word;
+    margin: 0;
+    line-height: 1.4;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#discord-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#discord-form input, #discord-form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid var(--secondary-text);
+    background-color: var(--darker-bg);
+    color: var(--light-text);
+    font-size: 1rem;
+}
+
+#discord-form textarea {
+    height: 100px;
+    resize: vertical;
+    flex-grow: 1;
+}
+
+#discord-form button {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--success-color);
+    color: var(--light-text);
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#discord-form button:hover {
+    background-color: #3aa071;
+}
+
+#discord-form button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+#status-message {
+    margin-top: 1rem;
+    font-weight: bold;
+    height: 20px;
+}
+
+footer {
+    text-align: center;
+    color: var(--secondary-text);
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--darker-bg);
+}
+
+.download-btn {
+    background-color: transparent;
+    border: 1px solid var(--secondary-text);
+    color: var(--secondary-text);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.download-btn:hover {
+    background-color: var(--secondary-text);
+    color: var(--darker-bg);
+}
+
+.download-btn .fa-download {
+    margin-right: 0.5rem;
+}
