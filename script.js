@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const discordForm = document.getElementById('discord-form');
     const sendButton = document.getElementById('send-button');
     const statusMessage = document.getElementById('status-message');
+    const chatContainer = document.getElementById('live-chat-messages');
 
     // IMPORTANTE: Substitua a string abaixo pela URL do seu Webhook do Discord.
     // Para criar um webhook: Vá em Configurações do Servidor > Integrações > Webhooks > Novo Webhook
@@ -13,6 +14,66 @@ document.addEventListener('DOMContentLoaded', () => {
         statusMessage.textContent = 'Por favor, configure o URL do Webhook no arquivo script.js.';
         statusMessage.style.color = '#f04747'; // Error color
     }
+
+    // --- Início: Lógica do Chat de Mensagens Enviadas ---
+
+    const loadMessages = () => {
+        const messages = JSON.parse(localStorage.getItem('sentMessages')) || [];
+        messages.forEach(msg => addMessageToChat(msg.username, msg.message, msg.timestamp, false));
+        scrollToBottom();
+    };
+
+    const saveMessage = (username, message, timestamp) => {
+        const messages = JSON.parse(localStorage.getItem('sentMessages')) || [];
+        messages.push({ username, message, timestamp });
+        // Manter apenas as últimas 30 mensagens
+        if (messages.length > 30) {
+            messages.shift();
+        }
+        localStorage.setItem('sentMessages', JSON.stringify(messages));
+    };
+
+    const scrollToBottom = () => {
+        if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    };
+
+    const addMessageToChat = (username, messageText, time, animate) => {
+        if (!chatContainer) return;
+
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('chat-message');
+        if (animate) {
+             messageElement.style.animation = 'fadeIn 0.5s ease';
+        }
+
+        messageElement.innerHTML = `
+            <div>
+                <span class="author">${escapeHTML(username)}</span>
+                <span class="timestamp">${time}</span>
+            </div>
+            <p class="content">${escapeHTML(messageText)}</p>
+        `;
+        
+        chatContainer.appendChild(messageElement);
+
+        if (chatContainer.children.length > 30) {
+            chatContainer.removeChild(chatContainer.firstElementChild);
+        }
+
+        scrollToBottom();
+    };
+
+    const escapeHTML = (str) => {
+        const p = document.createElement('p');
+        p.appendChild(document.createTextNode(str));
+        return p.innerHTML;
+    };
+
+    loadMessages();
+
+    // --- Fim: Lógica do Chat de Mensagens Enviadas ---
 
     discordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -47,6 +108,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 showStatus('Mensagem enviada com sucesso!', 'success');
+                const timestamp = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                addMessageToChat(username, message, timestamp, true);
+                saveMessage(username, message, timestamp);
                 document.getElementById('message').value = '';
             } else {
                 const errorData = await response.json();
@@ -72,73 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
             statusMessage.style.color = '#99aab5';
         }
     }
-
-    // --- Início da Simulação de Chat ao Vivo ---
-    const chatContainer = document.getElementById('live-chat-messages');
-    if (chatContainer) {
-        const sampleUsers = ['MestreCuca', 'GamerX', 'DJ_Sonico', 'PixelArtLover', 'MemeLord', 'AnaCodista', 'Zek', 'LuaNerd'];
-        const sampleMessages = [
-            'Olá pessoal, tudo bem?',
-            'Alguém afim de jogar hoje à noite?',
-            'Acabei de ver o novo anúncio, que incrível!',
-            'KKKKKKKKKK muito bom esse meme que postaram',
-            'Qual a boa de hoje?',
-            'Recomendo muito essa música nova que saiu.',
-            'Estou trabalhando num projeto novo, em breve mostro pra vocês!',
-            'O servidor está muito legal!',
-            'A comunidade aqui é a melhor <3',
-            'Cheguei! Perdi alguma coisa?',
-            'Vamos organizar um campeonato?',
-            'Alguém me ajuda com uma dúvida de programação?'
-        ];
-
-        const addSimulatedMessage = () => {
-            if (document.hidden) return; // Pausa a simulação se a aba não estiver visível
-
-            const user = sampleUsers[Math.floor(Math.random() * sampleUsers.length)];
-            const messageText = sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
-            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('chat-message');
-
-            messageElement.innerHTML = `
-                <div>
-                    <span class="author">${user}</span>
-                    <span class="timestamp">${time}</span>
-                </div>
-                <p class="content">${messageText}</p>
-            `;
-
-            const isScrolledToBottom = chatContainer.scrollHeight - chatContainer.clientHeight <= chatContainer.scrollTop + 1;
-
-            chatContainer.appendChild(messageElement);
-
-            if (isScrolledToBottom) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-
-            if (chatContainer.children.length > 30) {
-                chatContainer.removeChild(chatContainer.firstElementChild);
-            }
-        };
-        
-        // Adiciona algumas mensagens iniciais para preencher o chat
-        for (let i = 0; i < 7; i++) {
-            setTimeout(addSimulatedMessage, i * 300);
-        }
-
-        // Adiciona uma nova mensagem em intervalos aleatórios para parecer mais natural
-        const scheduleNextMessage = () => {
-            const randomInterval = Math.random() * 4000 + 2000; // entre 2 e 6 segundos
-            setTimeout(() => {
-                addSimulatedMessage();
-                scheduleNextMessage();
-            }, randomInterval);
-        };
-        scheduleNextMessage();
-    }
-    // --- Fim da Simulação de Chat ao Vivo ---
 
     // Funcionalidade de Download do ZIP
     const downloadBtn = document.getElementById('download-zip-btn');
